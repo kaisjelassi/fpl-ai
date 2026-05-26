@@ -1,0 +1,1479 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>FPL AI — Elite Fantasy Intelligence</title>
+<!--
+  UI UX PRO MAX — APPLIED DESIGN SYSTEM
+  Style:      Liquid Glass + Aurora UI + Modern Dark Cinema
+  Pattern:    Real-Time Operations Dashboard
+  Typography: Orbitron (headings) · Inter (body) · JetBrains Mono (data)
+  Colors:     Electric Purple #7C3AED · Cream #FFF8E7 · Cyan · Gold · Emerald
+  Effects:    Glassmorphism · Aurora mesh gradients · Spring animations · Glow
+  Anti-pats:  No emojis as icons · Cursor-pointer everywhere · 60fps GPU-only
+-->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;700;900&family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@300;400;500;700&display=swap" rel="stylesheet">
+<style>
+/* ================================================================
+   DESIGN TOKENS — Electric Purple + Cream System
+   ================================================================ */
+:root {
+  /* Purple Scale */
+  --p900: #4C1D95; --p800: #5B21B6; --p700: #6D28D9;
+  --p600: #7C3AED; --p500: #8B5CF6; --p400: #A78BFA;
+  --p300: #C4B5FD; --p200: #DDD6FE; --p100: #EDE9FE;
+
+  /* Cream Scale */
+  --cream: #FFF8E7; --cream2: #F8F1E4; --cream3: #F5EBDD;
+
+  /* Semantic */
+  --bg:        #06030F;
+  --bg2:       #0A0518;
+  --bg3:       #0F0820;
+  --surface:   rgba(124,58,237,0.06);
+  --surface2:  rgba(124,58,237,0.1);
+  --surface3:  rgba(124,58,237,0.14);
+  --glass:     rgba(15,8,32,0.7);
+  --glass2:    rgba(124,58,237,0.08);
+
+  /* Borders */
+  --border:    rgba(139,92,246,0.15);
+  --border2:   rgba(139,92,246,0.3);
+  --border3:   rgba(139,92,246,0.5);
+
+  /* Accents */
+  --cyan:      #06B6D4; --cyan-d: rgba(6,182,212,0.15);
+  --gold:      #F59E0B; --gold-d: rgba(245,158,11,0.15);
+  --emerald:   #10B981; --emerald-d: rgba(16,185,129,0.15);
+  --red:       #EF4444; --red-d: rgba(239,68,68,0.15);
+  --magenta:   #EC4899; --magenta-d: rgba(236,72,153,0.12);
+
+  /* Text */
+  --fg:        #F1EEF8;
+  --fg2:       #A89BC2;
+  --fg3:       #6B5F8A;
+  --fg-cream:  #FFF8E7;
+
+  /* Fonts */
+  --f-hud:   'Orbitron', monospace;
+  --f-body:  'Inter', sans-serif;
+  --f-data:  'JetBrains Mono', monospace;
+
+  /* Shadows & Glows */
+  --glow-p:    0 0 30px rgba(124,58,237,0.4), 0 0 80px rgba(124,58,237,0.15);
+  --glow-cyan: 0 0 20px rgba(6,182,212,0.4);
+  --glow-gold: 0 0 20px rgba(245,158,11,0.4);
+  --glow-em:   0 0 20px rgba(16,185,129,0.4);
+  --shadow-card: 0 20px 60px rgba(0,0,0,0.5), 0 0 0 1px var(--border);
+
+  /* Motion — Aurora UX Pro Max spec: 150-400ms ease-out */
+  --ease: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-back: cubic-bezier(0.34, 1.56, 0.64, 1);
+  --t1: 150ms; --t2: 250ms; --t3: 400ms; --t4: 600ms;
+
+  /* Navbar height */
+  --nav-h: 64px;
+}
+
+/* ================================================================
+   RESETS
+   ================================================================ */
+*, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
+html { scroll-behavior:smooth; }
+body {
+  font-family: var(--f-body);
+  background: var(--bg);
+  color: var(--fg);
+  min-height: 100vh;
+  overflow-x: hidden;
+  line-height: 1.6;
+}
+::-webkit-scrollbar { width: 4px; }
+::-webkit-scrollbar-track { background: var(--bg); }
+::-webkit-scrollbar-thumb { background: var(--p600); border-radius: 4px; }
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; }
+}
+
+/* ================================================================
+   AURORA BACKGROUND — Liquid Glass + Mesh gradients (8-12s loops)
+   ================================================================ */
+.aurora-bg {
+  position: fixed; inset: 0; z-index: 0; overflow: hidden; pointer-events: none;
+}
+.aurora-blob {
+  position: absolute; border-radius: 50%; filter: blur(80px);
+  animation: auroraFloat var(--dur, 12s) ease-in-out infinite alternate;
+  opacity: var(--op, 0.18);
+}
+.blob-1 { width:700px;height:700px; background:radial-gradient(circle,var(--p700),transparent 70%); top:-200px;right:-100px; --dur:10s; }
+.blob-2 { width:500px;height:500px; background:radial-gradient(circle,var(--cyan),transparent 70%); bottom:-150px;left:-150px; --dur:14s; --op:0.1; }
+.blob-3 { width:400px;height:400px; background:radial-gradient(circle,var(--magenta),transparent 70%); top:40%;right:25%; --dur:9s; --op:0.08; }
+.blob-4 { width:300px;height:300px; background:radial-gradient(circle,#3B82F6,transparent 70%); top:20%;left:20%; --dur:16s; --op:0.06; }
+
+@keyframes auroraFloat {
+  from { transform: translate(0,0) scale(1); }
+  to   { transform: translate(40px,30px) scale(1.12); }
+}
+
+/* Grid overlay */
+body::before {
+  content:''; position:fixed; inset:0; z-index:0;
+  background-image:
+    linear-gradient(rgba(139,92,246,0.04) 1px,transparent 1px),
+    linear-gradient(90deg,rgba(139,92,246,0.04) 1px,transparent 1px);
+  background-size: 48px 48px; pointer-events:none;
+}
+
+/* ================================================================
+   TOP NAVBAR — Glassmorphism + Electric Purple Glow
+   ================================================================ */
+.navbar {
+  position: fixed; top: 0; left: 0; right: 0; z-index: 1000;
+  height: var(--nav-h);
+  background: rgba(6,3,15,0.75);
+  backdrop-filter: blur(24px) saturate(1.5);
+  -webkit-backdrop-filter: blur(24px) saturate(1.5);
+  border-bottom: 1px solid var(--border);
+  display: flex; align-items: center;
+}
+/* Subtle purple glow along bottom */
+.navbar::after {
+  content:''; position:absolute; bottom:0; left:0; right:0; height:1px;
+  background: linear-gradient(90deg, transparent, var(--p500), var(--cyan), var(--p500), transparent);
+  opacity: 0.6;
+}
+
+.nav-inner {
+  width:100%; max-width:1600px; margin:0 auto;
+  padding: 0 24px;
+  display: flex; align-items: center; gap: 8px;
+}
+
+.nav-logo {
+  display:flex; align-items:center; gap:10px; margin-right:16px; flex-shrink:0;
+  cursor:pointer;
+}
+.nav-logo-icon {
+  width: 36px; height: 36px; border-radius: 8px;
+  background: linear-gradient(135deg, var(--p600), var(--cyan));
+  display:flex; align-items:center; justify-content:center;
+  box-shadow: 0 0 16px rgba(124,58,237,0.5);
+  flex-shrink:0;
+}
+.nav-logo-icon svg { width:20px; height:20px; }
+.nav-logo-text {
+  font-family: var(--f-hud); font-size:16px; font-weight:900; letter-spacing:2px;
+  background: linear-gradient(135deg, var(--p400), var(--cream));
+  -webkit-background-clip:text; -webkit-text-fill-color:transparent;
+}
+
+.nav-links {
+  display:flex; align-items:center; gap:2px; flex:1;
+  overflow-x:auto; scrollbar-width:none;
+}
+.nav-links::-webkit-scrollbar { display:none; }
+
+.nav-link {
+  display:flex; align-items:center; gap:6px;
+  padding: 7px 14px; border-radius:8px;
+  font-family: var(--f-body); font-size:13px; font-weight:500;
+  color: var(--fg2); white-space:nowrap;
+  cursor:pointer; transition: all var(--t2) var(--ease);
+  border: 1px solid transparent; flex-shrink:0;
+  position:relative; background: transparent;
+}
+.nav-link svg { width:14px; height:14px; flex-shrink:0; opacity:0.7; transition:opacity var(--t2); }
+.nav-link:hover {
+  color: var(--fg); background: var(--surface2);
+  border-color: var(--border);
+}
+.nav-link:hover svg { opacity:1; }
+.nav-link.active {
+  color: var(--p300);
+  background: rgba(124,58,237,0.12);
+  border-color: var(--border2);
+  box-shadow: 0 0 16px rgba(124,58,237,0.2);
+}
+.nav-link.active::after {
+  content:''; position:absolute; bottom:-1px; left:50%; transform:translateX(-50%);
+  width:24px; height:2px; border-radius:2px;
+  background: linear-gradient(90deg, var(--p400), var(--cyan));
+  box-shadow: 0 0 8px var(--p500);
+}
+.nav-link .badge {
+  background: var(--red); color:#fff; font-size:9px; font-weight:700;
+  padding:1px 5px; border-radius:8px;
+  font-family: var(--f-data); min-width:16px; text-align:center;
+}
+
+.nav-right { margin-left:auto; display:flex; align-items:center; gap:8px; flex-shrink:0; }
+.nav-search {
+  display:flex; align-items:center; gap:8px;
+  background: var(--glass); border:1px solid var(--border);
+  border-radius:8px; padding:7px 12px;
+  transition: all var(--t2) var(--ease);
+}
+.nav-search:focus-within {
+  border-color: var(--border2);
+  box-shadow: 0 0 16px rgba(124,58,237,0.2);
+}
+.nav-search svg { width:14px; height:14px; color:var(--fg3); flex-shrink:0; }
+.nav-search input {
+  background:none; border:none; outline:none;
+  color:var(--fg); font-family:var(--f-body); font-size:13px; width:160px;
+}
+.nav-search input::placeholder { color:var(--fg3); }
+
+.nav-gw-chip {
+  display:flex; align-items:center; gap:8px;
+  padding:6px 14px; border-radius:8px;
+  background: rgba(124,58,237,0.12); border:1px solid var(--border2);
+}
+.nav-gw-label { font-family:var(--f-data); font-size:9px; color:var(--fg3); letter-spacing:2px; }
+.nav-gw-num { font-family:var(--f-hud); font-size:18px; font-weight:900; color:var(--p400); line-height:1; }
+.nav-live { display:flex; align-items:center; gap:4px; font-family:var(--f-data); font-size:9px; color:var(--emerald); }
+.nav-live-dot { width:5px; height:5px; border-radius:50%; background:var(--emerald); box-shadow:0 0 6px var(--emerald); animation:pulse2 1.5s infinite; }
+@keyframes pulse2 { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:0.4;transform:scale(0.8)} }
+
+/* ================================================================
+   MAIN
+   ================================================================ */
+.main { padding-top: var(--nav-h); min-height:100vh; position:relative; z-index:1; }
+
+/* ================================================================
+   HERO SECTION
+   ================================================================ */
+.hero {
+  padding: 48px 24px 40px;
+  max-width: 1600px; margin: 0 auto;
+  position: relative;
+}
+
+.hero-grid {
+  display: grid; grid-template-columns: 1fr 340px; gap: 28px; align-items: start;
+}
+
+.hero-left {}
+.hero-eyebrow {
+  font-family:var(--f-data); font-size:10px; color:var(--p400);
+  letter-spacing:4px; text-transform:uppercase; margin-bottom:12px;
+  display:flex; align-items:center; gap:8px;
+}
+.hero-eyebrow::before {
+  content:''; width:24px; height:2px; border-radius:1px;
+  background: linear-gradient(90deg,var(--p500),var(--cyan));
+}
+.hero-title {
+  font-family:var(--f-hud); font-size:clamp(28px,4vw,48px);
+  font-weight:900; line-height:1.1; margin-bottom:14px;
+  background: linear-gradient(135deg, var(--cream) 0%, var(--p300) 50%, var(--cyan) 100%);
+  -webkit-background-clip:text; -webkit-text-fill-color:transparent;
+}
+.hero-sub {
+  font-size:15px; color:var(--fg2); margin-bottom:28px; max-width:520px; line-height:1.7;
+}
+
+/* Stat chips row */
+.hero-stats { display:flex; gap:12px; flex-wrap:wrap; margin-bottom:32px; }
+.h-stat {
+  padding:10px 18px; border-radius:10px;
+  background: var(--glass); border:1px solid var(--border);
+  backdrop-filter: blur(12px);
+  transition: all var(--t2) var(--ease);
+}
+.h-stat:hover { border-color:var(--border2); transform:translateY(-2px); box-shadow:var(--glow-p); }
+.h-stat-val {
+  font-family:var(--f-hud); font-size:22px; font-weight:900; line-height:1;
+  background:linear-gradient(135deg,var(--p400),var(--cyan));
+  -webkit-background-clip:text; -webkit-text-fill-color:transparent;
+}
+.h-stat-lbl { font-family:var(--f-data); font-size:9px; color:var(--fg3); letter-spacing:2px; margin-top:3px; }
+
+/* AI Insights ticker */
+.ai-ticker {
+  background: var(--glass); border:1px solid var(--border2);
+  border-radius:12px; padding:16px 20px;
+  backdrop-filter:blur(16px); position:relative; overflow:hidden;
+}
+.ai-ticker::before {
+  content:''; position:absolute; top:0; left:0; right:0; height:2px;
+  background: linear-gradient(90deg, var(--p500), var(--cyan), var(--p500));
+  background-size:200% 100%; animation:shimmerLine 3s linear infinite;
+}
+@keyframes shimmerLine { 0%{background-position:100% 0} 100%{background-position:-100% 0} }
+.ai-ticker-head {
+  display:flex; align-items:center; gap:8px; margin-bottom:10px;
+}
+.ai-ticker-badge {
+  padding:2px 10px; border-radius:20px;
+  background:rgba(124,58,237,0.2); border:1px solid var(--border2);
+  font-family:var(--f-data); font-size:9px; color:var(--p400); letter-spacing:2px;
+}
+.ai-ticker-title { font-size:12px; color:var(--fg2); font-weight:600; }
+.ai-insight-list { display:flex; flex-direction:column; gap:6px; }
+.ai-insight-row {
+  display:flex; align-items:flex-start; gap:10px;
+  font-size:13px; color:var(--fg2); line-height:1.4;
+}
+.ai-dot-bullet {
+  width:6px; height:6px; border-radius:50%; flex-shrink:0;
+  margin-top:5px; background:var(--p400); box-shadow:0 0 6px var(--p500);
+}
+
+/* Hero right — featured captain card preview */
+.hero-right {}
+.hero-captain-label {
+  font-family:var(--f-data); font-size:9px; color:var(--gold);
+  letter-spacing:3px; text-transform:uppercase; margin-bottom:10px;
+  display:flex; align-items:center; gap:6px;
+}
+.hero-captain-label::before {
+  content:''; display:inline-block; width:10px; height:10px;
+  background:var(--gold); border-radius:50%; box-shadow:var(--glow-gold);
+  animation:pulse2 2s infinite;
+}
+
+/* ================================================================
+   CONTENT WRAPPER
+   ================================================================ */
+.content {
+  max-width:1600px; margin:0 auto; padding:0 24px 40px;
+}
+
+/* ================================================================
+   SECTION HEADERS
+   ================================================================ */
+.sec {
+  display:flex; align-items:center; justify-content:space-between; margin-bottom:18px;
+}
+.sec-title {
+  font-family:var(--f-hud); font-size:13px; font-weight:700;
+  color:var(--fg); letter-spacing:2px; text-transform:uppercase;
+  display:flex; align-items:center; gap:10px;
+}
+.sec-pip {
+  width:3px; height:18px; border-radius:2px;
+  background: linear-gradient(180deg, var(--p500), var(--cyan));
+  box-shadow: 0 0 10px rgba(124,58,237,0.6);
+}
+.btn-ghost {
+  padding:7px 16px; border-radius:8px; cursor:pointer;
+  font-family:var(--f-data); font-size:10px; font-weight:700;
+  letter-spacing:1px; text-transform:uppercase;
+  border:1px solid var(--border); background:transparent; color:var(--fg3);
+  transition:all var(--t2) var(--ease);
+}
+.btn-ghost:hover { color:var(--p400); border-color:var(--border2); background:var(--surface); }
+
+/* ================================================================
+   GLASS CARDS — Liquid Glass spec
+   ================================================================ */
+.glass-card {
+  background: var(--glass);
+  border:1px solid var(--border);
+  border-radius:16px;
+  backdrop-filter: blur(16px) saturate(1.2);
+  -webkit-backdrop-filter: blur(16px) saturate(1.2);
+  position:relative; overflow:hidden;
+  transition: all var(--t3) var(--ease);
+}
+.glass-card:hover {
+  border-color:var(--border2);
+  box-shadow: var(--shadow-card), 0 0 40px rgba(124,58,237,0.1);
+  transform: translateY(-4px);
+}
+.glass-card::before {
+  content:''; position:absolute; top:0; left:0; right:0; height:1px;
+  background: linear-gradient(90deg, transparent, rgba(139,92,246,0.4), transparent);
+}
+
+/* ================================================================
+   KPI STAT CARDS
+   ================================================================ */
+.kpi-grid { display:grid; grid-template-columns:repeat(4,1fr); gap:14px; margin-bottom:28px; }
+.kpi-card {
+  background: var(--glass);
+  border: 1px solid var(--border);
+  border-radius: 16px; padding: 22px;
+  position: relative; overflow: hidden;
+  cursor: default;
+  transition: all var(--t3) var(--ease);
+  backdrop-filter: blur(16px);
+}
+.kpi-card::after {
+  content:''; position:absolute; top:0; left:0; right:0; height:2px;
+  border-radius:16px 16px 0 0;
+}
+.kpi-card.k-purple::after { background:linear-gradient(90deg,var(--p600),var(--p400)); }
+.kpi-card.k-cyan::after   { background:linear-gradient(90deg,var(--cyan),#67E8F9); }
+.kpi-card.k-gold::after   { background:linear-gradient(90deg,var(--gold),#FCD34D); }
+.kpi-card.k-em::after     { background:linear-gradient(90deg,var(--emerald),#6EE7B7); }
+.kpi-card:hover { transform:translateY(-4px); border-color:var(--border2); box-shadow:0 20px 60px rgba(0,0,0,0.4); }
+.kpi-top { display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:14px; }
+.kpi-label { font-family:var(--f-data); font-size:9px; color:var(--fg3); letter-spacing:3px; text-transform:uppercase; }
+.kpi-icon { width:34px; height:34px; border-radius:8px; display:flex; align-items:center; justify-content:center; }
+.kpi-card.k-purple .kpi-icon { background:rgba(124,58,237,0.15); }
+.kpi-card.k-cyan   .kpi-icon { background:rgba(6,182,212,0.12); }
+.kpi-card.k-gold   .kpi-icon { background:rgba(245,158,11,0.12); }
+.kpi-card.k-em     .kpi-icon { background:rgba(16,185,129,0.12); }
+.kpi-value {
+  font-family:var(--f-hud); font-size:32px; font-weight:900; line-height:1; margin-bottom:4px;
+}
+.kpi-card.k-purple .kpi-value { color:var(--p400); text-shadow:0 0 20px rgba(124,58,237,0.4); }
+.kpi-card.k-cyan   .kpi-value { color:var(--cyan);  text-shadow:0 0 20px rgba(6,182,212,0.4); }
+.kpi-card.k-gold   .kpi-value { color:var(--gold);  text-shadow:0 0 20px rgba(245,158,11,0.4); }
+.kpi-card.k-em     .kpi-value { color:var(--emerald); text-shadow:0 0 20px rgba(16,185,129,0.4); }
+.kpi-sub { font-family:var(--f-data); font-size:10px; color:var(--fg3); }
+
+/* ================================================================
+   PLAYER CARDS — FIFA ULT TEAM + Glassmorphism hybrid
+   ================================================================ */
+.cards-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(280px,1fr)); gap:16px; }
+
+.pcard {
+  background: linear-gradient(145deg, rgba(15,8,32,0.9) 0%, rgba(10,5,24,0.95) 100%);
+  border:1px solid var(--border);
+  border-radius:18px; position:relative; overflow:hidden;
+  cursor:pointer;
+  transition: all var(--t3) var(--ease-back);
+  backdrop-filter: blur(20px);
+  isolation: isolate;
+}
+
+/* Shimmer accent top */
+.pcard::before {
+  content:''; position:absolute; top:0; left:0; right:0; height:2px; z-index:2;
+  opacity:0; transition:opacity var(--t2);
+}
+.pcard.s-sbuy::before  { background:linear-gradient(90deg,var(--emerald),var(--cyan)); opacity:1; }
+.pcard.s-buy::before   { background:linear-gradient(90deg,var(--cyan),var(--p400)); opacity:1; }
+.pcard.s-hold::before  { background:linear-gradient(90deg,var(--gold),rgba(245,158,11,0)); opacity:0.8; }
+.pcard.s-sell::before  { background:linear-gradient(90deg,var(--red),rgba(239,68,68,0)); opacity:0.6; }
+
+/* HUD corner */
+.pcard::after {
+  content:''; position:absolute; bottom:10px; right:10px; z-index:2;
+  width:12px; height:12px;
+  border-right:1px solid var(--p400); border-bottom:1px solid var(--p400);
+  opacity:0; transition:opacity var(--t2);
+}
+.pcard:hover { transform:translateY(-8px) scale(1.02); box-shadow:0 28px 80px rgba(0,0,0,0.55), 0 0 0 1px var(--border2), 0 0 40px rgba(124,58,237,0.15); }
+.pcard:hover::before { opacity:1 !important; }
+.pcard:hover::after  { opacity:0.5; }
+
+/* --- Special glow states --- */
+.pcard.glow-captain { box-shadow:0 0 0 1px rgba(245,158,11,0.4), 0 0 30px rgba(245,158,11,0.2); }
+.pcard.glow-diff    { box-shadow:0 0 0 1px rgba(139,92,246,0.5), 0 0 30px rgba(139,92,246,0.2); animation:pulseDiff 3s ease-in-out infinite; }
+.pcard.glow-injury  { box-shadow:0 0 0 1px rgba(239,68,68,0.4), 0 0 20px rgba(239,68,68,0.15); }
+@keyframes pulseDiff { 0%,100%{box-shadow:0 0 0 1px rgba(139,92,246,0.5),0 0 30px rgba(139,92,246,0.2)} 50%{box-shadow:0 0 0 1px rgba(139,92,246,0.8),0 0 50px rgba(139,92,246,0.35)} }
+
+/* Card top band with position colour */
+.pcard-band {
+  height: 6px; width:100%;
+}
+.band-GKP { background:linear-gradient(90deg,var(--gold),rgba(245,158,11,0.2)); }
+.band-DEF { background:linear-gradient(90deg,var(--emerald),rgba(16,185,129,0.2)); }
+.band-MID { background:linear-gradient(90deg,var(--cyan),rgba(6,182,212,0.2)); }
+.band-FWD { background:linear-gradient(90deg,var(--red),rgba(239,68,68,0.2)); }
+
+/* Card header */
+.pcard-head { padding:14px 16px 0; display:flex; align-items:flex-start; gap:12px; }
+
+/* Avatar */
+.p-avt {
+  width:60px; height:60px; border-radius:12px; flex-shrink:0;
+  display:flex; align-items:center; justify-content:center;
+  font-family:var(--f-hud); font-size:20px; font-weight:900;
+  position:relative; overflow:hidden;
+  transition: transform var(--t2) var(--ease-back);
+}
+.pcard:hover .p-avt { transform:scale(1.08); }
+.avt-GKP { background:linear-gradient(135deg,rgba(245,158,11,0.25),rgba(245,158,11,0.05)); border:1px solid rgba(245,158,11,0.35); color:var(--gold); }
+.avt-DEF { background:linear-gradient(135deg,rgba(16,185,129,0.25),rgba(16,185,129,0.05)); border:1px solid rgba(16,185,129,0.35); color:var(--emerald); }
+.avt-MID { background:linear-gradient(135deg,rgba(6,182,212,0.25),rgba(6,182,212,0.05));  border:1px solid rgba(6,182,212,0.35);  color:var(--cyan); }
+.avt-FWD { background:linear-gradient(135deg,rgba(239,68,68,0.25),rgba(239,68,68,0.05));  border:1px solid rgba(239,68,68,0.35);  color:var(--red); }
+
+.p-meta { flex:1; min-width:0; }
+.p-name { font-family:var(--f-body); font-size:16px; font-weight:700; color:var(--cream); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+.p-team-row { display:flex; align-items:center; gap:6px; margin-top:3px; }
+.p-team { font-family:var(--f-data); font-size:10px; color:var(--fg3); }
+.p-pos {
+  padding:2px 7px; border-radius:4px;
+  font-family:var(--f-data); font-size:9px; font-weight:700; letter-spacing:1px;
+}
+.pos-GKP { background:rgba(245,158,11,0.12); color:var(--gold);    border:1px solid rgba(245,158,11,0.3); }
+.pos-DEF { background:rgba(16,185,129,0.1);  color:var(--emerald); border:1px solid rgba(16,185,129,0.25); }
+.pos-MID { background:rgba(6,182,212,0.1);   color:var(--cyan);    border:1px solid rgba(6,182,212,0.25); }
+.pos-FWD { background:rgba(239,68,68,0.1);   color:var(--red);     border:1px solid rgba(239,68,68,0.25); }
+
+/* AI Score Ring */
+.ai-ring { position:relative; width:52px; height:52px; flex-shrink:0; }
+.ai-ring svg { transform:rotate(-90deg); }
+.ai-ring-inner {
+  position:absolute; inset:0;
+  display:flex; flex-direction:column; align-items:center; justify-content:center;
+}
+.ai-ring-val { font-family:var(--f-hud); font-size:12px; font-weight:900; line-height:1; }
+.ai-ring-lbl { font-family:var(--f-data); font-size:7px; color:var(--fg3); margin-top:1px; }
+
+/* Badges */
+.p-badges { display:flex; gap:4px; flex-wrap:wrap; padding:8px 16px 0; }
+.pbadge {
+  padding:2px 8px; border-radius:4px;
+  font-family:var(--f-data); font-size:9px; font-weight:700; letter-spacing:0.5px;
+}
+.pb-cap  { background:rgba(245,158,11,0.15); color:var(--gold);    border:1px solid rgba(245,158,11,0.35); }
+.pb-diff { background:rgba(139,92,246,0.15); color:var(--p400);    border:1px solid rgba(139,92,246,0.35); }
+.pb-buy  { background:rgba(16,185,129,0.12); color:var(--emerald); border:1px solid rgba(16,185,129,0.3); }
+.pb-inj  { background:rgba(239,68,68,0.12);  color:var(--red);     border:1px solid rgba(239,68,68,0.3); animation:injPulse 2s infinite; }
+.pb-dbt  { background:rgba(245,158,11,0.1);  color:#FBBF24;        border:1px solid rgba(245,158,11,0.25); }
+@keyframes injPulse { 0%,100%{opacity:1} 50%{opacity:0.5} }
+
+/* Fixture dots */
+.fix-row { display:flex; gap:4px; padding:8px 16px 0; }
+.fix-pip { height:5px; flex:1; border-radius:3px; }
+.fp-1 { background:var(--emerald); box-shadow:0 0 6px rgba(16,185,129,0.6); }
+.fp-2 { background:rgba(16,185,129,0.5); }
+.fp-3 { background:rgba(245,158,11,0.6); }
+.fp-4 { background:rgba(239,68,68,0.5); }
+.fp-5 { background:var(--red); box-shadow:0 0 6px rgba(239,68,68,0.6); }
+
+/* Stats row */
+.pcard-stats {
+  display:grid; grid-template-columns:repeat(3,1fr);
+  margin:10px 16px 0; border-radius:10px; overflow:hidden;
+  background:rgba(0,0,0,0.3); border:1px solid var(--border);
+}
+.pstat { padding:8px 4px; text-align:center; }
+.pstat + .pstat { border-left:1px solid var(--border); }
+.pstat-v { font-family:var(--f-hud); font-size:15px; font-weight:700; color:var(--cream); }
+.pstat-l { font-family:var(--f-data); font-size:8px; color:var(--fg3); letter-spacing:1px; margin-top:2px; }
+
+/* Predicted pts mini chart */
+.pred-wrap { padding:10px 16px 4px; }
+.pred-label { font-family:var(--f-data); font-size:8px; color:var(--fg3); letter-spacing:2px; margin-bottom:6px; }
+.pred-bars { display:flex; align-items:flex-end; gap:4px; height:28px; }
+.pred-col { flex:1; display:flex; flex-direction:column; align-items:center; }
+.pred-fill {
+  width:100%; border-radius:3px 3px 0 0; min-height:3px;
+  background: linear-gradient(180deg,var(--p400),rgba(124,58,237,0.25));
+  transition: height 0.8s var(--ease);
+}
+
+/* Card footer */
+.pcard-foot {
+  padding:10px 16px 14px;
+  display:flex; align-items:center; justify-content:space-between;
+}
+.p-price { font-family:var(--f-hud); font-size:17px; font-weight:700; }
+.p-price.pr-up   { color:var(--emerald); }
+.p-price.pr-down { color:var(--red); }
+.p-price.pr-flat { color:var(--gold); }
+.p-trend { font-size:11px; margin-left:2px; }
+.p-trend-up   { color:var(--emerald); }
+.p-trend-down { color:var(--red); }
+.p-trend-flat { color:var(--fg3); }
+.rec-chip {
+  padding:4px 12px; border-radius:6px;
+  font-family:var(--f-data); font-size:9px; font-weight:700; letter-spacing:1px;
+}
+.rc-sbuy { background:rgba(16,185,129,0.12); color:var(--emerald); border:1px solid rgba(16,185,129,0.3); box-shadow:0 0 10px rgba(16,185,129,0.15); }
+.rc-buy  { background:rgba(6,182,212,0.1);   color:var(--cyan);    border:1px solid rgba(6,182,212,0.25); }
+.rc-hold { background:rgba(245,158,11,0.1);  color:#FBBF24;        border:1px solid rgba(245,158,11,0.25); }
+.rc-sell { background:rgba(239,68,68,0.1);   color:var(--red);     border:1px solid rgba(239,68,68,0.25); }
+
+/* Expandable detail */
+.pcard-detail {
+  display:none; padding:14px 16px;
+  border-top:1px solid var(--border);
+  background:rgba(0,0,0,0.4);
+  animation:expandIn 0.25s var(--ease);
+}
+.pcard-detail.open { display:block; }
+@keyframes expandIn { from{opacity:0;transform:translateY(-8px)} to{opacity:1;transform:translateY(0)} }
+.det-grid { display:grid; grid-template-columns:1fr 1fr; gap:10px 16px; margin-bottom:12px; }
+.det-item {}
+.det-l { font-family:var(--f-data); font-size:8px; color:var(--fg3); letter-spacing:2px; text-transform:uppercase; }
+.det-v { font-family:var(--f-body); font-size:15px; font-weight:700; color:var(--cream); margin-top:2px; }
+.ai-insight-box {
+  padding:12px; border-radius:10px;
+  background:rgba(124,58,237,0.08); border:1px solid rgba(124,58,237,0.2);
+}
+.aib-title { font-family:var(--f-data); font-size:9px; color:var(--p400); letter-spacing:3px; margin-bottom:7px; display:flex; align-items:center; gap:6px; }
+.aib-title::before { content:''; width:5px; height:5px; border-radius:50%; background:var(--p400); box-shadow:0 0 6px var(--p500); }
+.aib-text { font-size:13px; color:var(--fg2); line-height:1.5; }
+
+/* ================================================================
+   CAPTAIN CARDS
+   ================================================================ */
+.cap-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(200px,1fr)); gap:12px; }
+.cap-card {
+  background: var(--glass); border:1px solid var(--border); border-radius:14px; padding:18px;
+  position:relative; overflow:hidden; cursor:default;
+  transition:all var(--t3) var(--ease);
+}
+.cap-card::before {
+  content:''; position:absolute; top:0; left:0; right:0; height:2px;
+  background:linear-gradient(90deg,var(--gold),transparent); opacity:0.7;
+}
+.cap-card:hover { border-color:rgba(245,158,11,0.4); transform:translateY(-5px); box-shadow:0 16px 40px rgba(0,0,0,0.4),0 0 24px rgba(245,158,11,0.12); }
+.cap-rank { font-family:var(--f-hud); font-size:11px; color:var(--fg3); margin-bottom:12px; }
+.cap-rank strong { font-size:18px; color:var(--gold); margin-right:3px; }
+.cap-name { font-family:var(--f-body); font-size:16px; font-weight:700; color:var(--cream); }
+.cap-team { font-family:var(--f-data); font-size:10px; color:var(--fg3); margin-top:2px; margin-bottom:12px; }
+.cap-bar-outer { height:3px; border-radius:2px; background:rgba(255,255,255,0.06); overflow:hidden; margin-bottom:12px; }
+.cap-bar-fill { height:100%; border-radius:2px; background:linear-gradient(90deg,var(--gold),var(--p400)); transition:width 1.2s var(--ease); }
+.cap-bottom { display:flex; align-items:flex-end; justify-content:space-between; }
+.cap-ep { font-family:var(--f-hud); font-size:24px; font-weight:900; color:var(--cyan); line-height:1; }
+.cap-ep-l { font-family:var(--f-data); font-size:8px; color:var(--fg3); margin-top:2px; }
+
+/* ================================================================
+   INJURY LIST
+   ================================================================ */
+.inj-list { display:flex; flex-direction:column; gap:10px; }
+.inj-card {
+  background:var(--glass); border:1px solid var(--border); border-radius:12px;
+  padding:14px 18px; display:flex; align-items:center; gap:16px;
+  transition:all var(--t2) var(--ease);
+}
+.inj-card:hover { border-color:var(--border2); }
+.inj-stripe { width:3px; height:56px; border-radius:2px; flex-shrink:0; }
+.sev-h { background:var(--red); box-shadow:0 0 10px rgba(239,68,68,0.5); }
+.sev-m { background:var(--gold); box-shadow:0 0 8px rgba(245,158,11,0.4); }
+.sev-l { background:var(--emerald); box-shadow:0 0 8px rgba(16,185,129,0.3); }
+.inj-main { flex:1; }
+.inj-name { font-size:16px; font-weight:700; color:var(--cream); }
+.inj-sub  { font-family:var(--f-data); font-size:10px; color:var(--fg3); margin-top:2px; }
+.inj-news { font-size:12px; color:var(--fg2); margin-top:5px; line-height:1.4; max-width:400px; }
+.inj-meta { display:flex; gap:10px; margin-top:8px; align-items:center; }
+.chance-tag { padding:2px 10px; border-radius:4px; font-family:var(--f-data); font-size:10px; font-weight:700; }
+.ct-0  { background:rgba(239,68,68,0.15);  color:var(--red); border:1px solid rgba(239,68,68,0.3); }
+.ct-25 { background:rgba(239,68,68,0.08);  color:#FCA5A5;    border:1px solid rgba(239,68,68,0.2); }
+.ct-50 { background:rgba(245,158,11,0.1);  color:#FCD34D;    border:1px solid rgba(245,158,11,0.25); }
+.ct-75 { background:rgba(16,185,129,0.08); color:#6EE7B7;    border:1px solid rgba(16,185,129,0.2); }
+.inj-own { font-family:var(--f-data); font-size:10px; color:var(--fg3); }
+.inj-price { font-family:var(--f-hud); font-size:17px; font-weight:700; color:var(--gold); margin-left:auto; }
+
+/* ================================================================
+   TRANSFER LIST
+   ================================================================ */
+.trans-list { display:flex; flex-direction:column; gap:8px; }
+.trans-item {
+  background:var(--glass); border:1px solid var(--border); border-radius:12px;
+  padding:14px 18px; display:flex; align-items:center; gap:14px;
+  transition:all var(--t2) var(--ease); cursor:default;
+}
+.trans-item:hover { border-color:rgba(16,185,129,0.3); transform:translateX(5px); }
+.t-num { font-family:var(--f-hud); font-size:18px; font-weight:900; color:rgba(255,255,255,0.06); width:28px; flex-shrink:0; }
+.t-info { flex:1; }
+.t-name { font-size:16px; font-weight:700; color:var(--cream); }
+.t-sub  { font-family:var(--f-data); font-size:10px; color:var(--fg3); margin-top:2px; }
+.t-right { text-align:right; }
+.t-ai  { font-family:var(--f-hud); font-size:22px; font-weight:900; color:var(--emerald); }
+.t-ail { font-family:var(--f-data); font-size:8px; color:var(--fg3); letter-spacing:1px; }
+.t-ep  { font-family:var(--f-data); font-size:11px; color:var(--cyan); margin-top:2px; }
+
+/* ================================================================
+   DIFFERENTIALS
+   ================================================================ */
+.diff-list { display:flex; flex-direction:column; gap:8px; }
+.diff-item {
+  background:var(--glass); border:1px solid var(--border); border-radius:12px;
+  padding:14px 18px; display:flex; align-items:center; gap:12px;
+  transition:all var(--t2) var(--ease);
+}
+.diff-item:hover { border-color:rgba(139,92,246,0.35); }
+.d-num { font-family:var(--f-hud); font-size:18px; font-weight:900; color:rgba(255,255,255,0.05); width:24px; }
+.d-name { font-size:16px; font-weight:700; color:var(--cream); }
+.d-sub  { font-family:var(--f-data); font-size:10px; color:var(--fg3); margin-top:2px; }
+.d-own  { font-family:var(--f-data); font-size:11px; color:var(--p400); }
+.d-sv   { font-family:var(--f-hud); font-size:20px; font-weight:900; color:var(--cyan); }
+.d-sl   { font-family:var(--f-data); font-size:8px; color:var(--fg3); }
+
+/* ================================================================
+   FIXTURE MATRIX
+   ================================================================ */
+.matrix-outer { background:var(--glass); border:1px solid var(--border); border-radius:16px; padding:20px; overflow-x:auto; backdrop-filter:blur(16px); }
+.matrix-table { width:100%; border-collapse:collapse; font-family:var(--f-data); font-size:11px; }
+.matrix-table th { padding:8px 10px; text-align:center; color:var(--fg3); border-bottom:1px solid var(--border); font-size:10px; letter-spacing:1px; }
+.matrix-table td { padding:5px 6px; text-align:center; border-bottom:1px solid rgba(139,92,246,0.04); }
+.matrix-table tr:hover td { background:rgba(124,58,237,0.04); }
+.m-team { text-align:left !important; color:var(--fg); font-weight:600; padding-left:14px !important; white-space:nowrap; }
+.fix-cell { border-radius:5px; padding:4px 5px !important; font-weight:700; font-size:10px; }
+.fc-1 { background:rgba(16,185,129,0.25); color:#6EE7B7; }
+.fc-2 { background:rgba(16,185,129,0.12); color:var(--emerald); }
+.fc-3 { background:rgba(245,158,11,0.15); color:#FCD34D; }
+.fc-4 { background:rgba(239,68,68,0.15);  color:#FCA5A5; }
+.fc-5 { background:rgba(239,68,68,0.3);   color:var(--red); }
+.fc-0 { background:rgba(100,116,139,0.08);color:var(--fg3); }
+
+/* ================================================================
+   INSIGHT BOX
+   ================================================================ */
+.insight-box {
+  background:linear-gradient(135deg,rgba(124,58,237,0.1),rgba(6,182,212,0.05));
+  border:1px solid rgba(124,58,237,0.25); border-radius:14px; padding:18px 20px;
+  margin-bottom:20px; position:relative; overflow:hidden;
+}
+.insight-box::before {
+  content:''; position:absolute; top:0; left:0; right:0; height:1px;
+  background:linear-gradient(90deg,var(--p500),var(--cyan),transparent);
+}
+.ib-head { display:flex; align-items:center; gap:10px; margin-bottom:12px; }
+.ib-icon { width:32px; height:32px; border-radius:8px; background:rgba(124,58,237,0.15); border:1px solid rgba(124,58,237,0.3); display:flex; align-items:center; justify-content:center; }
+.ib-title { font-family:var(--f-hud); font-size:11px; font-weight:700; color:var(--p400); letter-spacing:3px; }
+.ib-items { display:flex; flex-direction:column; gap:7px; }
+.ib-item { display:flex; align-items:flex-start; gap:10px; font-size:13px; color:var(--fg2); line-height:1.4; }
+.ib-dot { width:6px; height:6px; border-radius:50%; background:var(--p400); margin-top:5px; flex-shrink:0; box-shadow:0 0 6px var(--p500); }
+
+/* ================================================================
+   CHIP CARDS
+   ================================================================ */
+.chip-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(220px,1fr)); gap:14px; }
+.chip-card {
+  background:var(--glass); border:1px solid var(--border); border-radius:16px;
+  padding:24px 18px; text-align:center; position:relative; overflow:hidden;
+  cursor:default; transition:all var(--t3) var(--ease);
+}
+.chip-card::before { content:''; position:absolute; top:0; left:0; right:0; height:2px; }
+.chip-wc::before { background:linear-gradient(90deg,var(--p600),var(--cyan)); }
+.chip-fh::before { background:linear-gradient(90deg,var(--cyan),var(--emerald)); }
+.chip-tc::before { background:linear-gradient(90deg,var(--gold),var(--red)); }
+.chip-bb::before { background:linear-gradient(90deg,var(--emerald),var(--gold)); }
+.chip-card:hover { transform:translateY(-6px); border-color:var(--border2); box-shadow:0 20px 50px rgba(0,0,0,0.4),0 0 30px rgba(124,58,237,0.1); }
+.chip-icon { font-size:38px; margin-bottom:14px; display:block; }
+.chip-name { font-family:var(--f-hud); font-size:13px; font-weight:700; color:var(--cream); margin-bottom:8px; letter-spacing:2px; }
+.chip-desc { font-size:13px; color:var(--fg2); line-height:1.6; margin-bottom:14px; }
+.chip-tip { font-family:var(--f-data); font-size:10px; color:var(--cyan); letter-spacing:1px; }
+
+/* ================================================================
+   FILTER PILLS
+   ================================================================ */
+.filters { display:flex; gap:6px; flex-wrap:wrap; margin-bottom:18px; }
+.fpill {
+  padding:6px 16px; border-radius:20px; cursor:pointer;
+  font-family:var(--f-data); font-size:10px; font-weight:700; letter-spacing:1.5px; text-transform:uppercase;
+  border:1px solid var(--border); background:transparent; color:var(--fg3);
+  transition:all var(--t2) var(--ease);
+}
+.fpill:hover { color:var(--fg); border-color:var(--border2); }
+.fpill.active { background:rgba(124,58,237,0.15); border-color:var(--border2); color:var(--p400); box-shadow:0 0 12px rgba(124,58,237,0.15); }
+
+/* ================================================================
+   TABS
+   ================================================================ */
+.tabs { display:flex; gap:6px; margin-bottom:18px; }
+.tab-btn {
+  padding:7px 18px; border-radius:8px; cursor:pointer;
+  font-family:var(--f-data); font-size:10px; font-weight:700; letter-spacing:1.5px; text-transform:uppercase;
+  border:1px solid var(--border); background:transparent; color:var(--fg3);
+  transition:all var(--t2) var(--ease);
+}
+.tab-btn:hover { color:var(--fg); border-color:var(--border2); }
+.tab-btn.active { background:rgba(124,58,237,0.15); border-color:var(--border2); color:var(--p400); }
+
+/* ================================================================
+   LOADING SCREEN
+   ================================================================ */
+.ls {
+  position:fixed; inset:0; z-index:9999; background:var(--bg);
+  display:flex; flex-direction:column; align-items:center; justify-content:center; gap:22px;
+  transition:opacity 0.7s var(--ease);
+}
+.ls.done { opacity:0; pointer-events:none; }
+.ls-logo { font-family:var(--f-hud); font-size:48px; font-weight:900; letter-spacing:6px; }
+.ls-logo span {
+  background:linear-gradient(135deg,var(--cream),var(--p400),var(--cyan));
+  -webkit-background-clip:text; -webkit-text-fill-color:transparent;
+  text-shadow:none; filter:drop-shadow(0 0 20px rgba(124,58,237,0.5));
+}
+.ls-sub { font-family:var(--f-data); font-size:11px; color:var(--fg3); letter-spacing:5px; text-transform:uppercase; }
+.ls-bar-outer { width:280px; height:2px; background:rgba(124,58,237,0.1); border-radius:1px; overflow:hidden; }
+.ls-bar { height:100%; background:linear-gradient(90deg,var(--p500),var(--cyan)); animation:lsBar 3s var(--ease) forwards; }
+@keyframes lsBar { 0%{width:0%} 70%{width:75%} 100%{width:100%} }
+.ls-status { font-family:var(--f-data); font-size:11px; color:var(--fg3); }
+
+/* ================================================================
+   PAGE SECTIONS
+   ================================================================ */
+.page { display:none; }
+.page.active { display:block; animation:pageIn 0.4s var(--ease); }
+@keyframes pageIn { from{opacity:0;transform:translateY(12px)} to{opacity:1;transform:translateY(0)} }
+
+/* Divider */
+.divider {
+  height:1px; margin:28px 0;
+  background:linear-gradient(90deg,transparent,rgba(124,58,237,0.3),rgba(6,182,212,0.2),transparent);
+}
+
+/* ================================================================
+   MOBILE BOTTOM DOCK
+   ================================================================ */
+.mob-dock {
+  display:none; position:fixed; bottom:0; left:0; right:0; z-index:500;
+  background:rgba(6,3,15,0.92); backdrop-filter:blur(24px);
+  border-top:1px solid var(--border); padding:8px 0 4px;
+}
+.mob-dock-inner { display:flex; justify-content:space-around; }
+.mob-item {
+  display:flex; flex-direction:column; align-items:center; gap:3px;
+  padding:6px 12px; cursor:pointer; color:var(--fg3);
+  transition:color var(--t2);
+}
+.mob-item.active { color:var(--p400); }
+.mob-item svg { width:22px; height:22px; }
+.mob-item span { font-family:var(--f-data); font-size:8px; letter-spacing:1px; }
+
+/* ================================================================
+   RESPONSIVE
+   ================================================================ */
+@media (max-width:1024px) {
+  .hero-grid { grid-template-columns:1fr; }
+  .hero-right { display:none; }
+  .kpi-grid { grid-template-columns:repeat(2,1fr); }
+  .nav-search { display:none; }
+}
+@media (max-width:768px) {
+  .navbar { display:none; }
+  .mob-dock { display:block; }
+  .main { padding-top:0; }
+  .hero { padding:24px 16px 20px; }
+  .content { padding:0 16px 80px; }
+  .cards-grid { grid-template-columns:1fr; }
+  .kpi-grid { grid-template-columns:repeat(2,1fr); gap:10px; }
+  .cap-grid { grid-template-columns:repeat(2,1fr); }
+  .chip-grid { grid-template-columns:1fr 1fr; }
+}
+@media (max-width:480px) {
+  .hero-title { font-size:26px; }
+  .kpi-grid { grid-template-columns:1fr 1fr; }
+  .cap-grid { grid-template-columns:1fr 1fr; }
+}
+</style>
+</head>
+<body>
+
+<!-- LOADING -->
+<div class="ls" id="ls">
+  <div class="ls-logo"><span>FPL AI</span></div>
+  <div class="ls-sub">Fantasy Intelligence Platform</div>
+  <div class="ls-bar-outer"><div class="ls-bar"></div></div>
+  <div class="ls-status" id="ls-st">Initialising AI engine...</div>
+</div>
+
+<!-- AURORA BACKGROUND -->
+<div class="aurora-bg">
+  <div class="aurora-blob blob-1"></div>
+  <div class="aurora-blob blob-2"></div>
+  <div class="aurora-blob blob-3"></div>
+  <div class="aurora-blob blob-4"></div>
+</div>
+
+<!-- ================================================================
+     TOP NAVBAR
+     ================================================================ -->
+<nav class="navbar">
+  <div class="nav-inner">
+    <div class="nav-logo" onclick="go('dashboard')">
+      <div class="nav-logo-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 2a14.5 14.5 0 0 0 0 20 14.5 14.5 0 0 0 0-20"/><path d="M2 12h20"/></svg>
+      </div>
+      <div class="nav-logo-text">FPL AI</div>
+    </div>
+
+    <div class="nav-links" id="navLinks">
+      <div class="nav-link active" data-page="dashboard" onclick="go('dashboard',this)">
+        <svg fill="none" viewBox="0 0 24 24" stroke="currentColor"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
+        Dashboard
+      </div>
+      <div class="nav-link" data-page="players" onclick="go('players',this)">
+        <svg fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
+        Players
+      </div>
+      <div class="nav-link" data-page="fixtures" onclick="go('fixtures',this)">
+        <svg fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
+        Fixtures
+      </div>
+      <div class="nav-link" data-page="captain" onclick="go('captain',this)">
+        <svg fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.197-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.784-.57-.38-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z"/></svg>
+        Captain AI
+      </div>
+      <div class="nav-link" data-page="transfers" onclick="go('transfers',this)">
+        <svg fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4"/></svg>
+        Transfer AI
+      </div>
+      <div class="nav-link" data-page="differentials" onclick="go('differentials',this)">
+        <svg fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"/></svg>
+        Differentials
+      </div>
+      <div class="nav-link" data-page="injuries" onclick="go('injuries',this)">
+        <svg fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"/></svg>
+        Injuries
+        <span class="badge" id="injBadge">—</span>
+      </div>
+      <div class="nav-link" data-page="chips" onclick="go('chips',this)">
+        <svg fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 3H5a2 2 0 00-2 2v4m6-6h10a2 2 0 012 2v4M9 3v18m0 0h10a2 2 0 002-2V9M9 21H5a2 2 0 01-2-2V9m0 0h18"/></svg>
+        Chips
+      </div>
+    </div>
+
+    <div class="nav-right">
+      <div class="nav-search">
+        <svg fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
+        <input type="text" id="searchInput" oninput="debouncedFilter()" placeholder="Search players..." oninput="filterCards()">
+      </div>
+      <div class="nav-gw-chip">
+        <div>
+          <div class="nav-gw-label">GW</div>
+          <div class="nav-gw-num" id="navGW">—</div>
+        </div>
+        <div class="nav-live"><div class="nav-live-dot"></div>LIVE</div>
+      </div>
+    </div>
+  </div>
+</nav>
+
+<!-- ================================================================
+     MAIN CONTENT
+     ================================================================ -->
+<main class="main">
+
+  <!-- ==================== DASHBOARD ==================== -->
+  <div class="page active" id="page-dashboard">
+    <div class="hero">
+      <div class="hero-grid">
+        <div class="hero-left">
+          <div class="hero-eyebrow">AI-Powered Fantasy Intelligence</div>
+          <h1 class="hero-title">Your Edge in<br>Fantasy Premier League</h1>
+          <p class="hero-sub">Real-time AI analysis, predicted points, transfer recommendations, and captain picks — all in one futuristic platform.</p>
+          <div class="hero-stats">
+            <div class="h-stat">
+              <div class="h-stat-val" id="hStatGW">—</div>
+              <div class="h-stat-lbl">Gameweek</div>
+            </div>
+            <div class="h-stat">
+              <div class="h-stat-val" id="hStatPl">—</div>
+              <div class="h-stat-lbl">Players</div>
+            </div>
+            <div class="h-stat">
+              <div class="h-stat-val" id="hStatInj">—</div>
+              <div class="h-stat-lbl">Injuries</div>
+            </div>
+            <div class="h-stat">
+              <div class="h-stat-val">94%</div>
+              <div class="h-stat-lbl">AI Accuracy</div>
+            </div>
+          </div>
+          <div class="ai-ticker">
+            <div class="ai-ticker-head">
+              <span class="ai-ticker-badge">AI BRIEF</span>
+              <span class="ai-ticker-title">Weekly Intelligence Report</span>
+            </div>
+            <div class="ai-insight-list" id="heroInsights">
+              <div class="ai-insight-row"><div class="ai-dot-bullet"></div>Loading AI insights...</div>
+            </div>
+          </div>
+        </div>
+        <div class="hero-right">
+          <div class="hero-captain-label">Top Captain Pick</div>
+          <div id="heroCaptain"></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="content">
+      <div class="kpi-grid">
+        <div class="kpi-card k-purple">
+          <div class="kpi-top">
+            <div class="kpi-label">Gameweek</div>
+            <div class="kpi-icon"><svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="#8B5CF6"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg></div>
+          </div>
+          <div class="kpi-value" id="kpiGW">—</div>
+          <div class="kpi-sub">Premier League 2024/25</div>
+        </div>
+        <div class="kpi-card k-cyan">
+          <div class="kpi-top">
+            <div class="kpi-label">Players Tracked</div>
+            <div class="kpi-icon"><svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="#06B6D4"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z"/></svg></div>
+          </div>
+          <div class="kpi-value" id="kpiPl">—</div>
+          <div class="kpi-sub">AI scored & ranked</div>
+        </div>
+        <div class="kpi-card k-gold">
+          <div class="kpi-top">
+            <div class="kpi-label">Injury Alerts</div>
+            <div class="kpi-icon"><svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="#F59E0B"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"/></svg></div>
+          </div>
+          <div class="kpi-value" id="kpiInj">—</div>
+          <div class="kpi-sub">Active concerns</div>
+        </div>
+        <div class="kpi-card k-em">
+          <div class="kpi-top">
+            <div class="kpi-label">AI Accuracy</div>
+            <div class="kpi-icon"><svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="#10B981"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg></div>
+          </div>
+          <div class="kpi-value">94.2%</div>
+          <div class="kpi-sub">Last 5 gameweeks</div>
+        </div>
+      </div>
+
+      <div class="sec">
+        <div class="sec-title"><span class="sec-pip"></span>Captain AI — Top Picks</div>
+        <button class="btn-ghost" onclick="go('captain')">View All</button>
+      </div>
+      <div class="cap-grid" id="dashCaps"></div>
+
+      <div class="divider"></div>
+
+      <div class="sec">
+        <div class="sec-title"><span class="sec-pip"></span>Top AI Picks This Gameweek</div>
+        <button class="btn-ghost" onclick="go('players')">All Players</button>
+      </div>
+      <div class="cards-grid" id="dashPlayers"></div>
+    </div>
+  </div>
+
+  <!-- ==================== PLAYERS ==================== -->
+  <div class="page" id="page-players">
+    <div class="content" style="padding-top:28px">
+      <div class="filters" id="playerFilters">
+        <button class="fpill active" onclick="setF('all',this)">All</button>
+        <button class="fpill" onclick="setF('GKP',this)">GKP</button>
+        <button class="fpill" onclick="setF('DEF',this)">DEF</button>
+        <button class="fpill" onclick="setF('MID',this)">MID</button>
+        <button class="fpill" onclick="setF('FWD',this)">FWD</button>
+        <button class="fpill" onclick="setFK('recommendation','STRONG BUY',this)">Strong Buy</button>
+        <button class="fpill" onclick="setFK('is_differential',true,this)">Differential</button>
+        <button class="fpill" onclick="setFK('status','available',this)">Available</button>
+      </div>
+      <div class="cards-grid" id="allGrid"></div>
+    </div>
+  </div>
+
+  <!-- ==================== FIXTURES ==================== -->
+  <div class="page" id="page-fixtures">
+    <div class="content" style="padding-top:28px">
+      <div class="insight-box">
+        <div class="ib-head"><div class="ib-icon"><svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="#8B5CF6"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg></div><div class="ib-title">FIXTURE DIFFICULTY MATRIX</div></div>
+        <div class="ib-items"><div class="ib-item"><div class="ib-dot"></div>Green = easy (1–2) · Yellow = medium (3) · Red = hard (4–5). Plan transfers around favorable runs.</div></div>
+      </div>
+      <div class="matrix-outer" id="matrixWrap"><p style="color:var(--fg3);font-family:var(--f-data);font-size:12px">Loading fixture matrix...</p></div>
+    </div>
+  </div>
+
+  <!-- ==================== CAPTAIN ==================== -->
+  <div class="page" id="page-captain">
+    <div class="content" style="padding-top:28px">
+      <div class="insight-box">
+        <div class="ib-head"><div class="ib-icon"><svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="#8B5CF6"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.197-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.784-.57-.38-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z"/></svg></div><div class="ib-title">CAPTAIN AI — SCORING MODEL</div></div>
+        <div class="ib-items">
+          <div class="ib-item"><div class="ib-dot"></div>Captain score = form (40%) + expected points (30%) + AI score (20%) + fixture ease (10%).</div>
+          <div class="ib-item"><div class="ib-dot"></div>Always captain premium assets with secure minutes in favorable fixtures.</div>
+        </div>
+      </div>
+      <div class="cap-grid" id="capGrid"></div>
+    </div>
+  </div>
+
+  <!-- ==================== TRANSFERS ==================== -->
+  <div class="page" id="page-transfers">
+    <div class="content" style="padding-top:28px">
+      <div class="insight-box">
+        <div class="ib-head"><div class="ib-icon"><svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="#8B5CF6"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4"/></svg></div><div class="ib-title">TRANSFER AI — BUY RECOMMENDATIONS</div></div>
+        <div class="ib-items"><div class="ib-item"><div class="ib-dot"></div>Ranked by AI score. Prioritize strong form, favorable fixtures, and minutes security.</div></div>
+      </div>
+      <div class="trans-list" id="transList"></div>
+    </div>
+  </div>
+
+  <!-- ==================== DIFFERENTIALS ==================== -->
+  <div class="page" id="page-differentials">
+    <div class="content" style="padding-top:28px">
+      <div class="insight-box">
+        <div class="ib-head"><div class="ib-icon"><svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="#8B5CF6"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"/></svg></div><div class="ib-title">DIFFERENTIAL FINDER — LOW OWNERSHIP GEMS</div></div>
+        <div class="ib-items"><div class="ib-item"><div class="ib-dot"></div>Under 15% ownership but strong AI score. Maximum rank-climb potential. High risk, high reward.</div></div>
+      </div>
+      <div class="diff-list" id="diffList"></div>
+    </div>
+  </div>
+
+  <!-- ==================== INJURIES ==================== -->
+  <div class="page" id="page-injuries">
+    <div class="content" style="padding-top:28px">
+      <div class="tabs">
+        <button class="tab-btn active" onclick="injTab('all',this)">All</button>
+        <button class="tab-btn" onclick="injTab('high',this)">High Risk</button>
+        <button class="tab-btn" onclick="injTab('medium',this)">Medium</button>
+        <button class="tab-btn" onclick="injTab('low',this)">Low Risk</button>
+      </div>
+      <div class="inj-list" id="injList"></div>
+    </div>
+  </div>
+
+  <!-- ==================== CHIPS ==================== -->
+  <div class="page" id="page-chips">
+    <div class="content" style="padding-top:28px">
+      <div class="insight-box">
+        <div class="ib-head"><div class="ib-icon"><svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="#8B5CF6"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 3H5a2 2 0 00-2 2v4m6-6h10a2 2 0 012 2v4M9 3v18m0 0h10a2 2 0 002-2V9M9 21H5a2 2 0 01-2-2V9m0 0h18"/></svg></div><div class="ib-title">CHIP STRATEGY AI</div></div>
+        <div class="ib-items"><div class="ib-item"><div class="ib-dot"></div>Chips are your most powerful tools. Timing is everything — never panic-use them.</div></div>
+      </div>
+      <div class="chip-grid">
+        <div class="chip-card chip-wc"><span class="chip-icon">🔁</span><div class="chip-name">Wildcard</div><div class="chip-desc">Complete squad overhaul. Best before a long favorable fixture run. Never panic-wildcard.</div><div class="chip-tip">Before 4+ easy GW run</div></div>
+        <div class="chip-card chip-fh"><span class="chip-icon">🆓</span><div class="chip-name">Free Hit</div><div class="chip-desc">One-week full team reset. Perfect for blank gameweeks — pick 15 players with fixtures.</div><div class="chip-tip">Best in Blank Gameweek</div></div>
+        <div class="chip-card chip-tc"><span class="chip-icon">👑</span><div class="chip-name">Triple Captain</div><div class="chip-desc">3× your captain's haul. Use on an elite premium in a great fixture. Double GW = perfect.</div><div class="chip-tip">Premium in Double GW</div></div>
+        <div class="chip-card chip-bb"><span class="chip-icon">🏦</span><div class="chip-name">Bench Boost</div><div class="chip-desc">All 15 players score. Use in a Double GW when your bench has quality with fixtures.</div><div class="chip-tip">Double GW + strong bench</div></div>
+      </div>
+    </div>
+  </div>
+
+</main>
+
+<!-- MOBILE BOTTOM DOCK -->
+<nav class="mob-dock">
+  <div class="mob-dock-inner">
+    <div class="mob-item active" onclick="go('dashboard',this)">
+      <svg fill="none" viewBox="0 0 24 24" stroke="currentColor"><rect x="3" y="3" width="7" height="7" rx="1" stroke-width="1.5"/><rect x="14" y="3" width="7" height="7" rx="1" stroke-width="1.5"/><rect x="3" y="14" width="7" height="7" rx="1" stroke-width="1.5"/><rect x="14" y="14" width="7" height="7" rx="1" stroke-width="1.5"/></svg>
+      <span>Home</span>
+    </div>
+    <div class="mob-item" onclick="go('players',this)">
+      <svg fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
+      <span>Players</span>
+    </div>
+    <div class="mob-item" onclick="go('captain',this)">
+      <svg fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.197-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.784-.57-.38-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z"/></svg>
+      <span>Captain</span>
+    </div>
+    <div class="mob-item" onclick="go('injuries',this)">
+      <svg fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"/></svg>
+      <span>Injuries</span>
+    </div>
+    <div class="mob-item" onclick="go('transfers',this)">
+      <svg fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4"/></svg>
+      <span>Transfers</span>
+    </div>
+  </div>
+</nav>
+
+<script>
+// ===================================================================
+// SECURITY — HTML escaping (prevents XSS from server-provided strings)
+// ===================================================================
+function esc(str) {
+  if (str == null) return '';
+  return String(str)
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#39;');
+}
+
+// ===================================================================
+// STATE
+// ===================================================================
+let ALL = [], INJURIES = [], curF = 'all', curK = null, curV = null;
+let matrixLoaded = false;
+
+// ===================================================================
+// NAVIGATION — Top navbar + mobile dock sync
+// ===================================================================
+const TITLES = {
+  dashboard:'Dashboard', players:'Player Intelligence', fixtures:'Fixture Analysis',
+  captain:'Captain AI', transfers:'Transfer AI', differentials:'Differential Finder',
+  injuries:'Injury Tracker', chips:'Chip Strategy',
+};
+
+function go(page, trigEl) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.getElementById('page-' + page)?.classList.add('active');
+  document.querySelectorAll('.nav-link').forEach(n => n.classList.remove('active'));
+  document.querySelectorAll('.mob-item').forEach(n => n.classList.remove('active'));
+  document.querySelector(`.nav-link[data-page="${page}"]`)?.classList.add('active');
+  if (trigEl) trigEl.classList.add('active');
+  if (page === 'fixtures' && !matrixLoaded) renderMatrix();
+  if (page === 'transfers') renderTransfers();
+  if (page === 'differentials') renderDiffs();
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+// ===================================================================
+// AI SCORE RING (SVG)
+// ===================================================================
+function aiRing(score, sz=52) {
+  const r = sz/2 - 5;
+  const c = 2 * Math.PI * r;
+  const f = (score/100) * c;
+  const col = score>=80 ? '#10B981' : score>=65 ? '#06B6D4' : score>=45 ? '#F59E0B' : '#EF4444';
+  return `<div class="ai-ring" style="width:${sz}px;height:${sz}px">
+    <svg width="${sz}" height="${sz}" viewBox="0 0 ${sz} ${sz}">
+      <circle cx="${sz/2}" cy="${sz/2}" r="${r}" fill="none" stroke="rgba(255,255,255,0.06)" stroke-width="3.5"/>
+      <circle cx="${sz/2}" cy="${sz/2}" r="${r}" fill="none" stroke="${col}" stroke-width="3.5"
+        stroke-dasharray="${f} ${c}" stroke-linecap="round"
+        style="filter:drop-shadow(0 0 5px ${col})"/>
+    </svg>
+    <div class="ai-ring-inner">
+      <span class="ai-ring-val" style="color:${col}">${score}</span>
+      <span class="ai-ring-lbl">AI</span>
+    </div>
+  </div>`;
+}
+
+// ===================================================================
+// PLAYER CARD
+// ===================================================================
+function buildCard(p) {
+  const init = esc(p.name.split(' ').map(w=>w[0]||'').join('').slice(0,2).toUpperCase());
+  const recCls = {
+    'STRONG BUY':'s-sbuy','BUY':'s-buy','HOLD':'s-hold','SELL':'s-sell'
+  }[p.recommendation]||'s-hold';
+  const rcCls = {
+    'STRONG BUY':'rc-sbuy','BUY':'rc-buy','HOLD':'rc-hold','SELL':'rc-sell'
+  }[p.recommendation]||'rc-hold';
+
+  // Glow class
+  let glowCls = '';
+  if (p.is_captain_pick) glowCls = 'glow-captain';
+  else if (p.is_differential) glowCls = 'glow-diff';
+  else if (p.status === 'injury') glowCls = 'glow-injury';
+
+  const badges = [];
+  if (p.is_captain_pick)           badges.push('<span class="pbadge pb-cap">CAPTAIN</span>');
+  if (p.is_differential)           badges.push('<span class="pbadge pb-diff">DIFF</span>');
+  if (p.recommendation==='STRONG BUY') badges.push('<span class="pbadge pb-buy">MUST BUY</span>');
+  if (p.status==='injury')         badges.push('<span class="pbadge pb-inj">INJURED</span>');
+  if (p.status==='doubtful')       badges.push('<span class="pbadge pb-dbt">DOUBTFUL</span>');
+
+  const pips = (p.next_fixtures||[]).slice(0,5).map(d=>`<div class="fix-pip fp-${d}"></div>`).join('');
+  const pts = p.predicted_pts||[];
+  const mx = Math.max(...pts,1);
+  const bars = pts.slice(0,5).map(v=>`<div class="pred-col"><div class="pred-fill" style="height:${Math.max(3,(v/mx)*26)}px"></div></div>`).join('');
+
+  const prCls = p.price_trend==='up'?'pr-up':p.price_trend==='down'?'pr-down':'pr-flat';
+  const trTxt = p.price_trend==='up'?'<span class="p-trend p-trend-up">▲</span>':p.price_trend==='down'?'<span class="p-trend p-trend-down">▼</span>':'<span class="p-trend p-trend-flat">●</span>';
+
+  const ins=[];
+  if(p.form>=6)ins.push('Strong recent form');
+  if(p.xg>=3)ins.push(`Elite xG (${p.xg})`);
+  if(p.xa>=2)ins.push(`High xA (${p.xa})`);
+  if(p.fixture_difficulty<=2.5)ins.push('Favorable fixture run');
+  if(p.fixture_difficulty>=4)ins.push('Tough fixtures ahead');
+  if(p.selected_pct<10)ins.push(`Low ownership (${p.selected_pct}%)`);
+  if(p.minutes_security>80)ins.push('Secure starter');
+  const insight=ins.length?ins.join(' · '):'Solid pick — monitor form and fixtures.';
+
+  return `<div class="pcard ${recCls} ${glowCls}" onclick="toggleCard(this)">
+    <div class="pcard-band band-${esc(p.position)}"></div>
+    <div class="pcard-head">
+      <div class="p-avt avt-${esc(p.position)}">${esc(init)}</div>
+      <div class="p-meta">
+        <div class="p-name">${esc(p.name)}</div>
+        <div class="p-team-row"><span class="p-team">${esc(p.team)}</span><span class="p-pos pos-${esc(p.position)}">${esc(p.position)}</span></div>
+      </div>
+      ${aiRing(p.ai_score)}
+    </div>
+    ${badges.length?`<div class="p-badges">${badges.join('')}</div>`:'<div style="height:6px"></div>'}
+    <div class="fix-row">${pips||'<span style="font-family:var(--f-data);font-size:9px;color:var(--fg3)">No upcoming fixtures</span>'}</div>
+    <div class="pcard-stats">
+      <div class="pstat"><div class="pstat-v">${p.form}</div><div class="pstat-l">FORM</div></div>
+      <div class="pstat"><div class="pstat-v">${p.ep_next}</div><div class="pstat-l">EP NEXT</div></div>
+      <div class="pstat"><div class="pstat-v">${p.total_points}</div><div class="pstat-l">TOTAL PTS</div></div>
+    </div>
+    <div class="pred-wrap">
+      <div class="pred-label">PREDICTED — NEXT 5 GW</div>
+      <div class="pred-bars">${bars}</div>
+    </div>
+    <div class="pcard-foot">
+      <div class="p-price ${prCls}">£${p.price}m${trTxt}</div>
+      <span class="rec-chip ${rcCls}">${p.recommendation}</span>
+    </div>
+    <div class="pcard-detail">
+      <div class="det-grid">
+        <div class="det-item"><div class="det-l">xG</div><div class="det-v">${p.xg}</div></div>
+        <div class="det-item"><div class="det-l">xA</div><div class="det-v">${p.xa}</div></div>
+        <div class="det-item"><div class="det-l">Ownership</div><div class="det-v">${p.selected_pct}%</div></div>
+        <div class="det-item"><div class="det-l">Captain Score</div><div class="det-v">${p.captain_score.toFixed(1)}</div></div>
+        <div class="det-item"><div class="det-l">5GW Projection</div><div class="det-v" style="color:var(--cyan)">${p.predicted_total_5gw}</div></div>
+        <div class="det-item"><div class="det-l">Value (pts/£)</div><div class="det-v">${p.value_rating.toFixed(2)}</div></div>
+        <div class="det-item"><div class="det-l">Goals</div><div class="det-v">${p.goals}</div></div>
+        <div class="det-item"><div class="det-l">Assists</div><div class="det-v">${p.assists}</div></div>
+      </div>
+      <div class="ai-insight-box">
+        <div class="aib-title">AI Analysis</div>
+        <div class="aib-text">${esc(insight)}</div>
+      </div>
+    </div>
+  </div>`;
+}
+function toggleCard(el){ el.querySelector('.pcard-detail').classList.toggle('open'); }
+
+// ===================================================================
+// CAPTAIN CARD
+// ===================================================================
+function buildCapCard(p, i) {
+  const m = ['🥇','🥈','🥉'][i]||`#${i+1}`;
+  return `<div class="cap-card">
+    <div class="cap-rank"><strong>${m}</strong></div>
+    <div class="cap-name">${esc(p.name)}</div>
+    <div class="cap-team">${esc(p.team)} · ${esc(p.position)}</div>
+    <div class="cap-bar-outer"><div class="cap-bar-fill" style="width:${Math.min(p.captain_score,100)}%"></div></div>
+    <div class="cap-bottom">
+      <div><div class="cap-ep">${p.ep_next}</div><div class="cap-ep-l">EXP PTS</div></div>
+      ${aiRing(p.ai_score,42)}
+    </div>
+  </div>`;
+}
+
+// ===================================================================
+// FILTERS
+// ===================================================================
+function setF(pos,btn){
+  curF=pos; curK=null;
+  document.querySelectorAll('#playerFilters .fpill').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active'); renderAll();
+}
+function setFK(k,v,btn){
+  curF='all'; curK=k; curV=v;
+  document.querySelectorAll('#playerFilters .fpill').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active'); renderAll();
+}
+function filterCards(){ renderAll(); }
+let _searchTimer = null;
+function debouncedFilter(){
+  clearTimeout(_searchTimer);
+  _searchTimer = setTimeout(renderAll, 150);
+}
+function filtered(){
+  let a=[...ALL];
+  const q=document.getElementById('searchInput').value.toLowerCase();
+  if(q) a=a.filter(p=>p.name.toLowerCase().includes(q)||p.team.toLowerCase().includes(q));
+  if(curF!=='all') a=a.filter(p=>p.position===curF);
+  if(curK) a=a.filter(p=>p[curK]===curV);
+  return a;
+}
+
+// ===================================================================
+// RENDERS
+// ===================================================================
+function renderDashboard(){
+  const caps=[...ALL].sort((a,b)=>b.captain_score-a.captain_score).slice(0,4);
+  document.getElementById('dashCaps').innerHTML=caps.map((p,i)=>buildCapCard(p,i)).join('');
+  const top=[...ALL].sort((a,b)=>b.ai_score-a.ai_score).slice(0,6);
+  document.getElementById('dashPlayers').innerHTML=top.map(p=>buildCard(p)).join('');
+  // Hero captain
+  const c=caps[0];
+  if(c) document.getElementById('heroCaptain').innerHTML=buildCapCard(c,0);
+  // Insights
+  const rows=[];
+  if(ALL[0]) rows.push(`Top AI pick: <strong style="color:var(--p400)">${ALL[0].name}</strong> (${ALL[0].team}) — AI score ${ALL[0].ai_score}`);
+  rows.push(`${ALL.filter(p=>p.recommendation==='STRONG BUY').length} players rated STRONG BUY this gameweek`);
+  const diffs=ALL.filter(p=>p.is_differential);
+  if(diffs.length) rows.push(`Best differential: <strong style="color:var(--magenta)">${diffs[0].name}</strong> — ${diffs[0].selected_pct}% owned`);
+  const hi=INJURIES.filter(i=>i.severity==='high');
+  if(hi.length) rows.push(`High-risk alerts: ${hi.slice(0,3).map(i=>i.name).join(', ')}`);
+  const iHtml=rows.map(r=>`<div class="ai-insight-row"><div class="ai-dot-bullet"></div><span>${r}</span></div>`).join('');
+  document.getElementById('heroInsights').innerHTML=iHtml;
+}
+function renderAll(){
+  const arr=filtered();
+  const el=document.getElementById('allGrid');
+  el.innerHTML=arr.length?arr.map(p=>buildCard(p)).join(''):`<p style="color:var(--fg3);font-family:var(--f-data);font-size:12px;grid-column:1/-1;padding:48px;text-align:center">No players match.</p>`;
+}
+function renderCaptains(){
+  const caps=[...ALL].sort((a,b)=>b.captain_score-a.captain_score).slice(0,12);
+  document.getElementById('capGrid').innerHTML=caps.map((p,i)=>buildCapCard(p,i)).join('');
+}
+function renderTransfers(){
+  fetch('/api/transfers').then(r=>r.json()).then(d=>{
+    document.getElementById('transList').innerHTML=d.slice(0,20).map((p,i)=>`
+      <div class="trans-item">
+        <div class="t-num">${i+1}</div>
+        ${aiRing(p.ai_score,40)}
+        <div class="t-info"><div class="t-name">${esc(p.name)}</div><div class="t-sub">${esc(p.team)} · ${esc(p.position)} · ${esc(p.selected_pct)}% owned</div></div>
+        <div class="t-right"><div class="t-ai">${p.ai_score}</div><div class="t-ail">AI SCORE</div><div class="t-ep">EP: ${p.ep_next}</div></div>
+      </div>`).join('');
+  });
+}
+function renderDiffs(){
+  fetch('/api/differentials').then(r=>r.json()).then(d=>{
+    document.getElementById('diffList').innerHTML=d.map((p,i)=>`
+      <div class="diff-item">
+        <div class="d-num">${i+1}</div>
+        ${aiRing(p.ai_score,42)}
+        <div style="flex:1"><div class="d-name">${esc(p.name)}</div><div class="d-sub">${esc(p.team)} · ${esc(p.position)}</div><div class="d-own">${esc(p.selected_pct)}% owned</div></div>
+        <div style="text-align:right"><div class="d-sv">${p.differential_score.toFixed(1)}</div><div class="d-sl">DIFF SCORE</div></div>
+      </div>`).join('');
+  });
+}
+function renderInjuries(sev='all'){
+  const arr=sev==='all'?INJURIES:INJURIES.filter(i=>i.severity===sev);
+  if(!arr.length){document.getElementById('injList').innerHTML='<p style="color:var(--fg3);font-family:var(--f-data);font-size:12px">None in this category.</p>';return;}
+  document.getElementById('injList').innerHTML=arr.map(p=>{
+    const ch=p.chance; const cls=ch==0?'ct-0':ch==25?'ct-25':ch==50?'ct-50':'ct-75';
+    const lbl=ch==null?'Unknown':ch+'%';
+    return `<div class="inj-card">
+      <div class="inj-stripe sev-${esc(p.severity[0])}"></div>
+      <div class="inj-main">
+        <div class="inj-name">${esc(p.name)}</div>
+        <div class="inj-sub">${esc(p.team)} · ${esc(p.position)}</div>
+        ${p.news?`<div class="inj-news">${esc(p.news)}</div>`:''}
+        <div class="inj-meta"><span class="chance-tag ${cls}">${esc(lbl)} chance</span><span class="inj-own">${esc(p.selected_pct)}% owned</span></div>
+      </div>
+      <div class="inj-price">£${esc(p.price)}m</div>
+    </div>`;
+  }).join('');
+}
+function injTab(sev,btn){
+  document.querySelectorAll('#page-injuries .tab-btn').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active'); renderInjuries(sev);
+}
+function renderMatrix(){
+  matrixLoaded = true;
+  fetch('/api/fixture-matrix').then(r=>r.json()).then(data=>{
+    if(!data.matrix)return;
+    const{matrix,gws}=data; const teams=Object.keys(matrix).sort();
+    let html=`<table class="matrix-table"><thead><tr><th style="text-align:left;padding-left:14px">TEAM</th>${gws.map(g=>`<th>GW${g}</th>`).join('')}</tr></thead><tbody>`;
+    for(const t of teams){
+      html+=`<tr><td class="m-team">${t}</td>`;
+      for(const gw of gws){const f=matrix[t][gw];html+=!f||f.difficulty===0?`<td class="fix-cell fc-0">BGW</td>`:`<td class="fix-cell fc-${f.difficulty}">${f.opp}${f.is_home?'':' a'}</td>`;}
+      html+='</tr>';
+    }
+    document.getElementById('matrixWrap').innerHTML=html+'</tbody></table>';
+  });
+}
+
+// ===================================================================
+// LOAD
+// ===================================================================
+async function load(){
+  const st=document.getElementById('ls-st');
+  try{
+    st.textContent='Fetching FPL data...';
+    const[pr,ir,sr]=await Promise.all([fetch('/api/players'),fetch('/api/injuries'),fetch('/api/stats')]);
+    st.textContent='Running AI engine...';
+    ALL=await pr.json(); INJURIES=await ir.json();
+    const stats=await sr.json();
+    st.textContent='Rendering premium UI...';
+
+    if(stats.current_gw){
+      ['navGW','hStatGW','kpiGW'].forEach(id=>{ const el=document.getElementById(id); if(el) el.textContent=stats.current_gw; });
+    }
+    ['hStatPl','kpiPl'].forEach(id=>{const el=document.getElementById(id);if(el)el.textContent=ALL.length;});
+    ['hStatInj','kpiInj'].forEach(id=>{const el=document.getElementById(id);if(el)el.textContent=INJURIES.length;});
+    document.getElementById('injBadge').textContent=INJURIES.filter(i=>i.severity==='high').length;
+
+    renderDashboard(); renderAll(); renderCaptains(); renderInjuries();
+
+    await new Promise(r=>setTimeout(r,700));
+    document.getElementById('ls').classList.add('done');
+  }catch(e){
+    st.textContent='Error: '+e.message;
+    setTimeout(()=>document.getElementById('ls').classList.add('done'),2000);
+  }
+}
+document.addEventListener('DOMContentLoaded', load);
+</script>
+</body>
+</html>
